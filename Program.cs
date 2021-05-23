@@ -17,10 +17,10 @@ namespace Cowin
         {
 
             var config = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory).AddJsonFile("appSettings.json", false, true).Build();
-            
-            var userConfig= config.GetSection("userConfig").Get<Userconfig>();
-            var slotSettings =config.GetSection("slot").Get<Slot>();
+                .SetBasePath(System.Environment.CurrentDirectory).AddJsonFile("appSettings.json", false, true).Build();
+
+            var userConfig = config.GetSection("userConfig").Get<Userconfig>();
+            var slotSettings = config.GetSection("slot").Get<Slot>();
 
             UInt64 totalCount = 0;
             while (true)
@@ -72,7 +72,7 @@ namespace Cowin
                                             Console.WriteLine(subject);
 
                                             //Send Email
-                                            Email(subject, msg,userConfig.username,userConfig.pwd);
+                                            Email(subject, msg, userConfig.username, userConfig.pwd);
                                         }
 
                                     }
@@ -99,10 +99,11 @@ namespace Cowin
             Console.ReadKey(true);
         }
 
-        public static void Email(string subject, string htmlString,string email,string pwd)
+        public static void Email(string subject, string htmlString, string email, string pwd)
         {
             try
             {
+                Console.WriteLine($"{email}:{pwd}");
                 MailMessage message = new MailMessage();
                 SmtpClient smtp = new SmtpClient();
                 message.From = new MailAddress(email);
