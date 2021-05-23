@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Cowin": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
