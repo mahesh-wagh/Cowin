@@ -63,15 +63,15 @@ namespace Cowin
 
                                                 string subject = "", msg;
 
-                                                //CreateEmailBody(ageGroup, doseNumber, today, center, slotDetails, out subject, out msg);
+                                                CreateEmailBody(ageGroup, doseNumber, today, center, slotDetails, out subject, out msg);
 
-                                                CreateMsgBody(ageGroup, doseNumber, today, center, slotDetails, slot.mobiles);
+                                                //CreateMsgBody(ageGroup, doseNumber, today, center, slotDetails, slot.mobiles);
 
 
                                                 Console.WriteLine($"{subject}");
 
                                                 //Send Email
-                                                //Email(subject, msg, userConfig.username, userConfig.pwd, slot.to);
+                                                Email(subject, msg, userConfig.username, userConfig.pwd, slot.to);
 
                                                 Console.WriteLine($"Search Done\t: {today}\t||\tSlots found\t: { slotDetails.Count}");
                                             }
