@@ -65,7 +65,7 @@ namespace Cowin
 
                                                 //CreateEmailBody(ageGroup, doseNumber, today, center, slotDetails, out subject, out msg);
 
-                                                CreateMsgBody2(ageGroup, doseNumber, today, center, slotDetails, slot.mobiles);
+                                                CreateMsgBody(ageGroup, doseNumber, today, center, slotDetails, slot.mobiles);
 
 
                                                 Console.WriteLine($"{subject}");
