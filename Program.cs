@@ -64,14 +64,13 @@ namespace Cowin
 
                                                 //CreateEmailBody(ageGroup, doseNumber, today, center, slotDetails, out subject, out msg);
 
-                                                CreateMsgBody(ageGroup, doseNumber, today, center, slotDetails,  out msg);
+                                                CreateMsgBody(ageGroup, doseNumber, today, center, slotDetails, slot.mobiles);
 
 
                                                 Console.WriteLine($"{subject}");
 
                                                 //Send Email
                                                 //Email(subject, msg, userConfig.username, userConfig.pwd, slot.to);
-                                                SendSMS(msg, slot.mobiles);
 
                                                 Console.WriteLine($"Search Done\t: {today}\t||\tSlots found\t: { slotDetails.Count}");
                                             }
@@ -195,13 +194,6 @@ namespace Cowin
 
         }
 
-        public static void SendSMS(string msg, string toMobiles)
-        {
-            
-               
-
-
-        }
 
         public static void Email(string subject, string htmlString, string email, string pwd, string toEmails)
         {
