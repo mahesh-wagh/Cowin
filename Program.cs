@@ -11,6 +11,7 @@ using System.Threading;
 using Amazon;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
+using System.Text;
 
 namespace Cowin
 {
@@ -32,7 +33,7 @@ namespace Cowin
                 {
                     using (var client = new HttpClient())
                     {
-                        for (int i = 0; i < 15; i=i+7)
+                        for (int i = 0; i < 15; i = i + 7)
                         {
                             foreach (var slot in slotSettings)
                             {
@@ -60,11 +61,11 @@ namespace Cowin
                                             if (slotDetails != null && slotDetails.Count > 0)
                                             {
 
-                                                string subject="", msg;
+                                                string subject = "", msg;
 
                                                 //CreateEmailBody(ageGroup, doseNumber, today, center, slotDetails, out subject, out msg);
 
-                                                CreateMsgBody(ageGroup, doseNumber, today, center, slotDetails, slot.mobiles);
+                                                CreateMsgBody2(ageGroup, doseNumber, today, center, slotDetails, slot.mobiles);
 
 
                                                 Console.WriteLine($"{subject}");
@@ -78,12 +79,12 @@ namespace Cowin
                                         }
 
                                         Console.WriteLine($"Search Done\t: {today}\t||\tCentres Scanned\t: { apiResponse.centers.Length}\t||\tLocation : { slot.DistrictName}\t({slot.ageGroup}:Dose-{slot.dose})");
-                                        
+
                                     }
                                     else
                                     {
                                         Console.WriteLine($"Invalid Response\t: No Content");
-                                        
+
                                     }
                                     Thread.Sleep(2000);
                                 }
@@ -122,7 +123,7 @@ namespace Cowin
             Console.ReadKey(true);
         }
 
-        private static void CreateEmailBody(int ageGroup, int doseNumber, string today, Center center,List<Session> sessions, out string subject, out string msg)
+        private static void CreateEmailBody(int ageGroup, int doseNumber, string today, Center center, List<Session> sessions, out string subject, out string msg)
         {
             subject = $"{today} : {center.pincode} : {center.name}";
             msg = "";
@@ -146,7 +147,7 @@ namespace Cowin
                 msg += $"<TR><TD></td><td></td></TR>";
                 msg += $"<TR><TD></td><td></td></TR>";
             }
-         
+
             msg += "</TABLE>";
             msg += "</BODY>";
             msg += "</HTML>";
@@ -154,7 +155,7 @@ namespace Cowin
 
         private static void CreateMsgBody(int ageGroup, int doseNumber, string today, Center center, List<Session> sessions, string toMobiles)
         {
-          
+
             foreach (var session in sessions)
             {
                 string msg = "";
@@ -181,7 +182,8 @@ namespace Cowin
                         var response = client.PublishAsync(request).Result;
 
                         Console.WriteLine("Message sent to " + mobileNumber + ":");
-                        Console.WriteLine(msg);
+                        Console.WriteLine(response.HttpStatusCode);
+                        Console.WriteLine(response.MessageId);
                     }
                     catch (Exception ex)
                     {
@@ -189,11 +191,56 @@ namespace Cowin
                         Console.WriteLine(ex.Message);
                     }
                 }
-                
+
             }
 
         }
 
+        private static void CreateMsgBody2(int ageGroup, int doseNumber, string today, Center center, List<Session> sessions, string toMobiles)
+        {
+
+            foreach (var session in sessions)
+            {
+                string msg = "";
+                msg += $"_Date:{session.date}";
+                msg += $"_Age Group:{ageGroup}";
+                msg += $"_Dose 1:{session.available_capacity_dose1}";
+                msg += $"_Dose 2:{session.available_capacity_dose2}";
+                msg += $"_Center:{center.name}";
+                msg += $"_Block:{center.block_name}";
+                msg += $"_PinCode:{center.pincode}";
+                msg += $"_FeeType:{center.fee_type}";
+
+                try
+                {
+
+                    //client.DefaultRequestHeaders.Add("", "2Z8YUmCMOUKd35XsVXQWqg");
+                    string url = $"http://cloud.smsindiahub.in/api/mt/SendSMS?APIKey=2Z8YUmCMOUKd35XsVXQWqg&senderid=WEBSMS&channel=Promo&DCS=0&flashsms=0&number={toMobiles}&text={msg}&route=##&PEId=##";
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.MaximumAutomaticRedirections = 4;
+                    request.Headers.Add("APIKey", "2Z8YUmCMOUKd35XsVXQWqg");
+                    request.Credentials = CredentialCache.DefaultCredentials;
+
+                    HttpWebResponse response = (HttpWebResponse)request
+                    .GetResponse();
+                    Stream receiveStream = response.GetResponseStream(
+                    );
+                    StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                    string sResponse = readStream.ReadToEnd();
+                    response.Close();
+                    readStream.Close();
+                    Console.WriteLine(response.StatusCode);
+
+
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{ex.Message} \n {ex.StackTrace.ToString()}");
+                }
+            }
+
+        }
 
         public static void Email(string subject, string htmlString, string email, string pwd, string toEmails)
         {
