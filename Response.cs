@@ -9,19 +9,27 @@ namespace Cowin
     public class AppSettings
     {
         public Userconfig userConfig { get; set; }
-        public Slot slot { get; set; }
+        public List<Slot> Areas { get; set; }
     }
-
+       
+    
     public class Userconfig
     {
         public string username { get; set; }
         public string pwd { get; set; }
+        
     }
 
     public class Slot
     {
         public int ageGroup { get; set; }
         public int dose { get; set; }
+
+        public string DistrictName { get; set; }
+        public string DistrictCode { get; set; }
+
+        public string to { get; set; }
+        public string mobiles { get; set; }
     }
 
     public class ResponseObject
